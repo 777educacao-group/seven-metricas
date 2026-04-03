@@ -11,19 +11,23 @@ export function FunnelChart() {
   const bottleneck = findBottleneck(rates, config)
 
   const data = [
-    { value: counts.aquisicao, name: 'Aquisição' },
-    { value: counts.ligacao, name: 'Ligação / Filtro' },
-    { value: counts.convidados, name: 'Convidado (Aceitou)' },
-    { value: counts.compareceram, name: 'Compareceu (Mesa)' },
-    { value: counts.entrevista, name: 'Entrevista' },
-    { value: counts.fechamento, name: 'Fechamento' }
+    { value: counts.aquisicao, name: 'Aquisição', rate: 1 },
+    { value: counts.ligacao, name: 'Ligação / Filtro', rate: rates.contato },
+    { value: counts.convidados, name: 'Convidado (Aceitou)', rate: rates.qualificacao },
+    { value: counts.compareceram, name: 'Compareceu (Mesa)', rate: rates.presenca },
+    { value: counts.entrevista, name: 'Entrevista', rate: rates.selecao },
+    { value: counts.fechamento, name: 'Fechamento', rate: rates.fechamento }
   ]
 
   const option = {
     backgroundColor: 'transparent',
     tooltip: {
       trigger: 'item',
-      formatter: '{b}: {c} Leads',
+      formatter: function(params: any) {
+        const rate = params.data.rate * 100;
+        const rateText = rate === 100 ? '' : `<br/><span style="color:#C5A059;font-size:12px">Taxa de Conversão: ${rate.toFixed(1)}%</span>`;
+        return `${params.name}: <b>${params.value} Leads</b>${rateText}`;
+      },
       backgroundColor: 'rgba(10, 10, 10, 0.95)',
       borderColor: 'rgba(212, 175, 55, 0.2)',
       textStyle: { color: '#fff', fontFamily: 'Plus Jakarta Sans' },
@@ -90,7 +94,7 @@ export function FunnelChart() {
   }
 
   return (
-    <div className="bento-card h-full flex flex-col min-h-[400px]">
+    <div className="bento-card h-full flex flex-col min-h-[400px] animate-slide-up" style={{ animationDelay: '200ms' }}>
       <div className="flex justify-between items-start mb-2">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.05)] rounded-lg text-white">

@@ -1,8 +1,11 @@
-import { Tv, Edit, RefreshCw } from 'lucide-react'
+import { useState } from 'react'
+import { Tv, Edit, RefreshCw, Settings } from 'lucide-react'
 import { useSevenStore } from '../../store/useSevenStore'
+import { MetaModal } from '../modal/MetaModal'
 
 export function Header() {
   const { isTvMode, toggleTvMode, loadDemoData } = useSevenStore()
+  const [isMetaModalOpen, setIsMetaModalOpen] = useState(false)
 
   return (
     <header className="sticky top-0 z-50 bg-[#030303]/80 backdrop-blur-md border-b border-[rgba(255,255,255,0.04)]">
@@ -31,14 +34,23 @@ export function Header() {
 
           <div className="flex items-center gap-3">
             {!isTvMode && (
-              <button 
-                onClick={loadDemoData}
-                className="btn-ghost !text-xs hidden sm:flex"
-                aria-label="Carregar Dados Demo"
-              >
-                <RefreshCw size={14} className="mr-2" aria-hidden="true" />
-                Demo Data
-              </button>
+              <>
+                <button 
+                  onClick={loadDemoData}
+                  className="btn-ghost !text-xs hidden sm:flex"
+                  aria-label="Carregar Dados Demo"
+                >
+                  <RefreshCw size={14} className="mr-2" aria-hidden="true" />
+                  Demo Data
+                </button>
+                <button
+                  onClick={() => setIsMetaModalOpen(true)}
+                  className="btn-icon"
+                  aria-label="Configurar Meta"
+                >
+                  <Settings size={18} aria-hidden="true" />
+                </button>
+              </>
             )}
 
             <button
@@ -53,6 +65,8 @@ export function Header() {
           
         </div>
       </div>
+      
+      <MetaModal isOpen={isMetaModalOpen} onClose={() => setIsMetaModalOpen(false)} />
     </header>
   )
 }

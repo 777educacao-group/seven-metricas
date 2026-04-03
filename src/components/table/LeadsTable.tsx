@@ -1,9 +1,25 @@
+import { useState } from 'react'
 import { useSevenStore } from '../../store/useSevenStore'
 import { formatBRLCompact, formatDate } from '../../utils/formatters'
-import { User, Plus } from 'lucide-react'
+import { User, Plus, Edit2 } from 'lucide-react'
+import { LeadModal } from '../modal/LeadModal'
+import type { Lead } from '../../types'
 
 export function LeadsTable() {
-  const { leads } = useSevenStore()
+  const { leads, isTvMode } = useSevenStore()
+  
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
+
+  function openNewLead() {
+    setSelectedLead(null)
+    setIsModalOpen(true)
+  }
+
+  function openEditLead(lead: Lead) {
+    setSelectedLead(lead)
+    setIsModalOpen(true)
+  }
   
   // Status Badge Helper
   const statusColors: Record<string, string> = {
@@ -38,9 +54,11 @@ export function LeadsTable() {
           </div>
         </div>
         
-        <button className="btn-gold !h-9 !py-0 !text-xs">
-          <Plus size={14} className="mr-1" /> Novo Lead
-        </button>
+        {!isTvMode && (
+          <button onClick={openNewLead} className="btn-gold !h-9 !py-0 !text-xs">
+            <Plus size={14} className="mr-1" /> Novo Lead
+          </button>
+        )}
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-[rgba(255,255,255,0.05)]">
@@ -51,6 +69,7 @@ export function LeadsTable() {
               <th className="p-4 text-[10px] font-semibold text-[rgba(255,255,255,0.4)] uppercase tracking-widest">Etapa Atual</th>
               <th className="p-4 text-[10px] font-semibold text-[rgba(255,255,255,0.4)] uppercase tracking-widest">Status</th>
               <th className="p-4 text-[10px] font-semibold text-[rgba(255,255,255,0.4)] uppercase tracking-widest text-right">Potencial</th>
+              {!isTvMode && <th className="p-4 w-12"></th>}
             </tr>
           </thead>
           <tbody>
@@ -72,9 +91,20 @@ export function LeadsTable() {
                 </td>
                 <td className="p-4 text-right">
                   <span className="metric-value font-medium text-[rgba(255,255,255,0.8)]">
-                    {l.comprou ? formatBRLCompact(l.valorVendido) : (l.status === 'follow_up' ? 'R$ 75k' : '-')}
+                    {l.comprou ? formatBRLCompact(l.valorVendido) : (l.status === 'follow_up' ? '-' /* UI handles this differently if needed */ : '-')}
                   </span>
                 </td>
+                {!isTvMode && (
+                  <td className="p-4 text-center">
+                    <button 
+                      onClick={() => openEditLead(l)}
+                      className="text-[rgba(255,255,255,0.3)] hover:text-[#C5A059] transition-colors p-1"
+                      aria-label="Editar"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
@@ -85,6 +115,12 @@ export function LeadsTable() {
           </div>
         )}
       </div>
+      
+      <LeadModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        lead={selectedLead} 
+      />
     </div>
   )
 }

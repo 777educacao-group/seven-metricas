@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useSevenStore } from '../../store/useSevenStore'
 import { countByFunnel, calculateRates, reversePlanning } from '../../utils/calculations'
-import { CalendarDays } from 'lucide-react'
+import { CalendarDays, Target, Phone, Mail, Users, ClipboardCheck, Gem } from 'lucide-react'
 
 export default function ReversePlanning() {
   const { leads, config } = useSevenStore()
@@ -37,21 +37,24 @@ export default function ReversePlanning() {
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {[
-            { label: 'Aquisições', val: semanal.aquisicoes, icon: '🎯' },
-            { label: 'Ligações', val: semanal.ligacoes, icon: '📞' },
-            { label: 'Convidados', val: semanal.convidados, icon: '✉️' },
-            { label: 'Mesa (Presença)', val: semanal.presencas, icon: '🤝' },
-            { label: 'Entrevistas', val: semanal.entrevistas, icon: '📋' },
-            { label: 'Fechamentos', val: semanal.vendas, icon: '💎' },
-          ].map((item, i) => (
+            { label: 'Aquisições', val: semanal.aquisicoes, icon: Target },
+            { label: 'Ligações', val: semanal.ligacoes, icon: Phone },
+            { label: 'Convidados', val: semanal.convidados, icon: Mail },
+            { label: 'Mesa (Presença)', val: semanal.presencas, icon: Users },
+            { label: 'Entrevistas', val: semanal.entrevistas, icon: ClipboardCheck },
+            { label: 'Fechamentos', val: semanal.vendas, icon: Gem },
+          ].map((item, i) => {
+            const Icon = item.icon
+            return (
             <div key={i} className="p-3 bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.03)] rounded-xl flex items-center justify-between">
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-[rgba(255,255,255,0.4)] mb-1">{item.label}</p>
                 <p className="text-xl metric-value text-white">{item.val}</p>
               </div>
-              <span className="text-lg opacity-50 grayscale">{item.icon}</span>
+              <span className="text-[rgba(255,255,255,0.2)]"><Icon size={24} /></span>
             </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 

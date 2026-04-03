@@ -3,6 +3,7 @@ import { Header } from './components/layout/Header'
 import { MetaBar } from './components/dashboard/MetaBar'
 import { KPIGrid } from './components/dashboard/KPIGrid'
 import { FunnelChart } from './components/dashboard/FunnelChart'
+import { ExecutiveSummary } from './components/dashboard/ExecutiveSummary'
 import ReversePlanning from './components/dashboard/ReversePlanning'
 import { LeadsTable } from './components/table/LeadsTable'
 
@@ -25,14 +26,19 @@ function App() {
             <KPIGrid />
           </section>
 
-          {/* Row 3: Funil e Planejamento (60/40 split on large screens) */}
+          {/* Row 3: Funil e Planejamento */}
           <section className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            <div className="lg:col-span-3">
-              <FunnelChart />
+            <div className={`flex flex-col gap-6 ${isTvMode ? 'lg:col-span-5' : 'lg:col-span-3'}`}>
+              <ExecutiveSummary />
+              <div className="flex-1">
+                <FunnelChart />
+              </div>
             </div>
-            <div className="lg:col-span-2 flex flex-col">
-              <ReversePlanning />
-            </div>
+            {!isTvMode && (
+              <div className="lg:col-span-2 flex flex-col">
+                <ReversePlanning />
+              </div>
+            )}
           </section>
 
           {/* Row 4: Tabela de Leads (oculta no modo TV) */}
