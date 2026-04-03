@@ -40,3 +40,11 @@ export interface Config {
   precoLiquido: number;
   precoBruto: number;
 }
+
+export type PeriodType = 'mes' | 'trimestre' | 'ano' | 'geral' | 'custom';
+
+export interface Period {
+  tipo: PeriodType;
+  inicio?: string;
+  fim?: string;
+}

@@ -1,10 +1,11 @@
-import { useSevenStore } from '../../store/useSevenStore'
+import { useSevenStore, useFilteredLeads } from '../../store/useSevenStore'
 import { countByFunnel, calculateRates, findBottleneck } from '../../utils/calculations'
 import { formatBRLCompact, formatPercent } from '../../utils/formatters'
 import { MessageSquare } from 'lucide-react'
 
 export function ExecutiveSummary() {
-  const { leads, config } = useSevenStore()
+  const { config } = useSevenStore()
+  const leads = useFilteredLeads()
 
   const counts = countByFunnel(leads)
   const rates = calculateRates(counts)

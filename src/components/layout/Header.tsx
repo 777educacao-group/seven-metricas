@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Tv, Edit, RefreshCw, Settings } from 'lucide-react'
+import { Tv, Edit, RefreshCw, Settings, Calendar } from 'lucide-react'
 import { useSevenStore } from '../../store/useSevenStore'
+import type { PeriodType } from '../../types'
 import { MetaModal } from '../modal/MetaModal'
 
 export function Header() {
-  const { isTvMode, toggleTvMode, loadDemoData } = useSevenStore()
+  const { isTvMode, toggleTvMode, loadDemoData, period, setPeriod } = useSevenStore()
   const [isMetaModalOpen, setIsMetaModalOpen] = useState(false)
 
   return (
@@ -25,10 +26,19 @@ export function Header() {
             
             <div className="hidden md:block h-8 w-px bg-[rgba(255,255,255,0.1)] mx-4"></div>
             
-            <div className="hidden md:block">
-              <span className="badge-premium badge-gold">
-                Ciclo Atual
-              </span>
+            <div className="hidden md:flex items-center bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] rounded-lg px-3 min-h-[36px]">
+              <Calendar size={14} className="text-[rgba(255,255,255,0.4)] mr-2" />
+              <select 
+                className="bg-transparent border-none text-xs text-[rgba(255,255,255,0.8)] outline-none focus:ring-0 cursor-pointer uppercase tracking-wider font-semibold"
+                value={period.tipo}
+                onChange={(e) => setPeriod({ ...period, tipo: e.target.value as PeriodType })}
+                aria-label="Filtro de Período"
+              >
+                <option className="bg-[#0f1118]" value="mes">Este Mês</option>
+                <option className="bg-[#0f1118]" value="trimestre">Este Trimestre</option>
+                <option className="bg-[#0f1118]" value="ano">YTD (Ano)</option>
+                <option className="bg-[#0f1118]" value="geral">Todo o Período</option>
+              </select>
             </div>
           </div>
 

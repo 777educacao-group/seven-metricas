@@ -1,4 +1,4 @@
-import { useSevenStore } from '../../store/useSevenStore'
+import { useSevenStore, useFilteredLeads } from '../../store/useSevenStore'
 import { formatBRLCompact, formatPercent } from '../../utils/formatters'
 import { calculateRates, countByFunnel } from '../../utils/calculations'
 import { TrendingUp, Users, CheckCircle, AlertCircle, DollarSign, Activity } from 'lucide-react'
@@ -54,7 +54,8 @@ function KPICard({ title, value, subtitle, icon: Icon, semaforo, glowClass, dela
 }
 
 export function KPIGrid() {
-  const { leads, config } = useSevenStore()
+  const { config } = useSevenStore()
+  const leads = useFilteredLeads()
   const counts = countByFunnel(leads)
   const rates = calculateRates(counts)
 

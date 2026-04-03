@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
-import { useSevenStore } from '../../store/useSevenStore'
+import { useSevenStore, useFilteredLeads } from '../../store/useSevenStore'
 import { countByFunnel, calculateRates, reversePlanning } from '../../utils/calculations'
 import { CalendarDays, Target, Phone, Mail, Users, ClipboardCheck, Gem } from 'lucide-react'
 
 export default function ReversePlanning() {
-  const { leads, config } = useSevenStore()
+  const { config } = useSevenStore()
+  const leads = useFilteredLeads()
   const counts = useMemo(() => countByFunnel(leads), [leads])
   const rates = useMemo(() => calculateRates(counts), [counts])
 

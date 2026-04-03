@@ -1,10 +1,11 @@
 import ReactECharts from 'echarts-for-react'
-import { useSevenStore } from '../../store/useSevenStore'
+import { useSevenStore, useFilteredLeads } from '../../store/useSevenStore'
 import { countByFunnel, findBottleneck, calculateRates } from '../../utils/calculations'
 import { Filter } from 'lucide-react'
 
 export function FunnelChart() {
-  const { leads, config } = useSevenStore()
+  const { config } = useSevenStore()
+  const leads = useFilteredLeads()
 
   const counts = countByFunnel(leads)
   const rates = calculateRates(counts)

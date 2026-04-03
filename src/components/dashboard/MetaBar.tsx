@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
-import { useSevenStore } from '../../store/useSevenStore'
+import { useSevenStore, useFilteredLeads } from '../../store/useSevenStore'
 import { formatBRLCompact, formatPercent } from '../../utils/formatters'
 import { Target } from 'lucide-react'
 
 export function MetaBar() {
-  const { leads, config } = useSevenStore()
+  const { config } = useSevenStore()
+  const leads = useFilteredLeads()
 
   const valorColetado = useMemo(() => 
     leads.reduce((acc, lead) => acc + (lead.valorColetado || 0), 0)

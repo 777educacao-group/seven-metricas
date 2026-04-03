@@ -1,12 +1,13 @@
 import { useState } from 'react'
-import { useSevenStore } from '../../store/useSevenStore'
+import { useSevenStore, useFilteredLeads } from '../../store/useSevenStore'
 import { formatBRLCompact, formatDate } from '../../utils/formatters'
 import { User, Plus, Edit2 } from 'lucide-react'
 import { LeadModal } from '../modal/LeadModal'
 import type { Lead } from '../../types'
 
 export function LeadsTable() {
-  const { leads, isTvMode } = useSevenStore()
+  const { isTvMode } = useSevenStore()
+  const leads = useFilteredLeads()
   
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
