@@ -14,15 +14,12 @@ export function Header() {
         <div className="flex justify-between items-center h-20">
           
           <div className="flex items-center gap-4">
-            {/* Logo placeholder, replacing image for now since they lost it */}
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold tracking-widest text-[#D4AF37]" style={{ fontFamily: 'var(--font-display)' }}>
-                SEVEN
-              </span>
-              <span className="text-[0.6rem] uppercase tracking-[0.2em] text-[rgba(255,255,255,0.5)] -mt-1">
-                Executive Dashboard
-              </span>
-            </div>
+            <img 
+              src="/logo_seven.png" 
+              alt="Seven Painel" 
+              className="h-8 w-auto object-contain flex-shrink-0" 
+              fetchPriority="high"
+            />
             
             <div className="hidden md:block h-8 w-px bg-[rgba(255,255,255,0.1)] mx-4"></div>
             
