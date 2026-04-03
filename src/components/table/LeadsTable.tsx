@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useSevenStore, useFilteredLeads } from '../../store/useSevenStore'
 import { formatBRLCompact, formatDate } from '../../utils/formatters'
-import { User, Plus, Edit2 } from 'lucide-react'
+import { User, Plus, Edit2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { LeadModal } from '../modal/LeadModal'
 import type { Lead } from '../../types'
+
+const ITEMS_PER_PAGE = 7
 
 export function LeadsTable() {
   const { isTvMode } = useSevenStore()
@@ -11,6 +13,15 @@ export function LeadsTable() {
   
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
+  
+  // Paginação
+  const [currentPage, setCurrentPage] = useState(1)
+  const totalPages = Math.max(1, Math.ceil(leads.length / ITEMS_PER_PAGE))
+  
+  const currentLeads = leads.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE, 
+    currentPage * ITEMS_PER_PAGE
+  )
 
   function openNewLead() {
     setSelectedLead(null)
@@ -18,6 +29,7 @@ export function LeadsTable() {
   }
 
   function openEditLead(lead: Lead) {
+    if (isTvMode) return
     setSelectedLead(lead)
     setIsModalOpen(true)
   }
@@ -43,7 +55,7 @@ export function LeadsTable() {
   }
 
   return (
-    <div className="bento-card">
+    <div className="bento-card flex flex-col">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.05)] rounded-lg text-white">
@@ -62,59 +74,100 @@ export function LeadsTable() {
         )}
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-[rgba(255,255,255,0.05)]">
+      {/* Tabela com scroll horizontal e visual melhorado */}
+      <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
-            <tr className="bg-[rgba(255,255,255,0.02)] border-b border-[rgba(255,255,255,0.05)]">
-              <th className="p-4 text-[10px] font-semibold text-[rgba(255,255,255,0.4)] uppercase tracking-widest w-1/4">Nome</th>
-              <th className="p-4 text-[10px] font-semibold text-[rgba(255,255,255,0.4)] uppercase tracking-widest">Etapa Atual</th>
-              <th className="p-4 text-[10px] font-semibold text-[rgba(255,255,255,0.4)] uppercase tracking-widest">Status</th>
-              <th className="p-4 text-[10px] font-semibold text-[rgba(255,255,255,0.4)] uppercase tracking-widest text-right">Potencial</th>
-              {!isTvMode && <th className="p-4 w-12"></th>}
+            <tr className="border-b border-[rgba(255,255,255,0.06)]">
+              <th className="px-4 py-3 text-[10px] font-semibold text-[rgba(255,255,255,0.4)] uppercase tracking-widest w-1/4">Nome</th>
+              <th className="px-4 py-3 text-[10px] font-semibold text-[rgba(255,255,255,0.4)] uppercase tracking-widest">Etapa Atual</th>
+              <th className="px-4 py-3 text-[10px] font-semibold text-[rgba(255,255,255,0.4)] uppercase tracking-widest">Status</th>
+              <th className="px-4 py-3 text-[10px] font-semibold text-[rgba(255,255,255,0.4)] uppercase tracking-widest text-right">Potencial</th>
+              {!isTvMode && <th className="px-4 py-3 w-12 text-center text-[10px] font-semibold text-[rgba(255,255,255,0.4)] uppercase tracking-widest">Ações</th>}
             </tr>
           </thead>
           <tbody>
-            {leads.slice(0, 10).map((l) => (
-              <tr key={l.id} className="border-b border-[rgba(255,255,255,0.02)] hover:bg-[rgba(255,255,255,0.02)] transition-colors">
-                <td className="p-4">
-                  <div className="font-semibold text-sm text-white">{l.nome}</div>
-                  <div className="text-[10px] text-[rgba(255,255,255,0.4)] mt-1">{formatDate(l.dataEntrada)} • SDR: {l.responsavel}</div>
+            {currentLeads.length === 0 ? (
+              <tr>
+                <td colSpan={isTvMode ? 4 : 5} className="py-8 text-center text-[rgba(255,255,255,0.3)] text-sm">
+                  Nenhum lead encontrado neste período.
                 </td>
-                <td className="p-4">
-                  <span className="text-xs text-[rgba(255,255,255,0.7)] bg-[rgba(255,255,255,0.05)] px-2 py-1 rounded">
-                    {stageLabels[l.etapa]}
-                  </span>
-                </td>
-                <td className="p-4">
-                  <span className={`text-[10px] px-2 py-1 rounded-md border font-medium ${statusColors[l.status]}`}>
-                    {statusLabels[l.status]}
-                  </span>
-                </td>
-                <td className="p-4 text-right">
-                  <span className="metric-value font-medium text-[rgba(255,255,255,0.8)]">
-                    {l.comprou ? formatBRLCompact(l.valorVendido) : (l.status === 'follow_up' ? '-' /* UI handles this differently if needed */ : '-')}
-                  </span>
-                </td>
-                {!isTvMode && (
-                  <td className="p-4 text-center">
-                    <button 
-                      onClick={() => openEditLead(l)}
-                      className="text-[rgba(255,255,255,0.3)] hover:text-[#C5A059] transition-colors p-1"
-                      aria-label="Editar"
-                    >
-                      <Edit2 size={16} />
-                    </button>
-                  </td>
-                )}
               </tr>
-            ))}
+            ) : (
+              currentLeads.map((l) => (
+                <tr 
+                  key={l.id} 
+                  onClick={() => openEditLead(l)}
+                  className={`border-b border-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.02)] transition-colors group ${!isTvMode ? 'cursor-pointer' : ''}`}
+                >
+                  <td className="px-4 py-4">
+                    <div className="font-semibold text-sm text-[rgba(255,255,255,0.95)] group-hover:text-white transition-colors">
+                      {l.nome}
+                    </div>
+                    <div className="text-[10px] text-[rgba(255,255,255,0.4)] mt-1">
+                      {formatDate(l.dataEntrada)} • SDR: {l.responsavel}
+                    </div>
+                  </td>
+                  <td className="px-4 py-4">
+                    <span className="text-xs text-[rgba(255,255,255,0.65)]">
+                      {stageLabels[l.etapa]}
+                    </span>
+                  </td>
+                  <td className="px-4 py-4">
+                    <span className={`text-[10px] px-2 py-1 rounded-md border font-medium ${statusColors[l.status]}`}>
+                      {statusLabels[l.status]}
+                    </span>
+                  </td>
+                  <td className="px-4 py-4 text-right">
+                    <span className="metric-value font-medium text-[rgba(255,255,255,0.8)]">
+                      {l.comprou 
+                        ? formatBRLCompact(l.valorVendido) 
+                        : (l.status === 'follow_up' ? formatBRLCompact(l.valorVendido > 0 ? l.valorVendido : 75000) : '-')}
+                    </span>
+                  </td>
+                  {!isTvMode && (
+                    <td className="px-4 py-4 text-center">
+                      <div className="flex justify-center text-[rgba(255,255,255,0.2)] group-hover:text-[#C5A059] transition-colors">
+                        <Edit2 size={16} />
+                      </div>
+                    </td>
+                  )}
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
-        {leads.length > 10 && (
-          <div className="p-3 text-center border-t border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.01)]">
-            <span className="text-xs text-[rgba(255,255,255,0.4)] uppercase tracking-widest">Mostrando 10 recentes de {leads.length}</span>
-          </div>
-        )}
+      </div>
+
+      {/* Paginação */}
+      <div className="mt-4 pt-4 border-t border-[rgba(255,255,255,0.04)] flex items-center justify-between">
+        <div className="text-xs text-[rgba(255,255,255,0.4)]">
+          Mostrando {(currentPage - 1) * ITEMS_PER_PAGE + 1} a {Math.min(currentPage * ITEMS_PER_PAGE, leads.length)} de {leads.length}
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <button 
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(p => p - 1)}
+            className="btn-icon !w-8 !h-8 disabled:opacity-30 disabled:cursor-not-allowed border border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.02)]"
+            aria-label="Página Anterior"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          
+          <span className="text-xs font-medium text-[rgba(255,255,255,0.6)] px-2 metric-value">
+            {currentPage} / {totalPages}
+          </span>
+          
+          <button 
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(p => p + 1)}
+            className="btn-icon !w-8 !h-8 disabled:opacity-30 disabled:cursor-not-allowed border border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.02)]"
+            aria-label="Próxima Página"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
       </div>
       
       <LeadModal 
