@@ -14,12 +14,22 @@ export function Header() {
         <div className="flex justify-between items-center h-20">
           
           <div className="flex items-center gap-4">
-            <img 
-              src="/logo_seven.png" 
-              alt="Seven Painel" 
-              className="h-8 w-auto object-contain flex-shrink-0" 
-              fetchPriority="high"
-            />
+            <div className="flex items-center gap-3 cursor-pointer">
+              <img 
+                src="/logo_seven.png" 
+                alt="Seven Logo" 
+                className="h-12 w-auto object-contain flex-shrink-0" 
+                fetchPriority="high"
+              />
+              <div className="flex flex-col">
+                <span className="text-xl font-bold tracking-[0.12em] text-white leading-tight" style={{ fontFamily: 'var(--font-display)' }}>
+                  SEVEN
+                </span>
+                <span className="text-[0.6rem] uppercase tracking-[0.3em] text-[#C5A059]">
+                  Metrics
+                </span>
+              </div>
+            </div>
             
             <div className="hidden md:block h-8 w-px bg-[rgba(255,255,255,0.1)] mx-4"></div>
             
