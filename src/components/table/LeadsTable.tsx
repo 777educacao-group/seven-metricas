@@ -1,11 +1,9 @@
-import { useState } from 'react'
 import { useSevenStore } from '../../store/useSevenStore'
 import { formatBRLCompact, formatDate } from '../../utils/formatters'
-import type { Lead } from '../../types'
 import { User, Plus } from 'lucide-react'
 
 export function LeadsTable() {
-  const { leads, deleteLead } = useSevenStore()
+  const { leads } = useSevenStore()
   
   // Status Badge Helper
   const statusColors: Record<string, string> = {
@@ -56,7 +54,7 @@ export function LeadsTable() {
             </tr>
           </thead>
           <tbody>
-            {leads.slice(0, 10).map((l, i) => (
+            {leads.slice(0, 10).map((l) => (
               <tr key={l.id} className="border-b border-[rgba(255,255,255,0.02)] hover:bg-[rgba(255,255,255,0.02)] transition-colors">
                 <td className="p-4">
                   <div className="font-semibold text-sm text-white">{l.nome}</div>

@@ -1,4 +1,4 @@
-import type { Lead, Config, FunnelStage } from '../types'
+import type { Lead, Config } from '../types'
 
 let id = 0
 function genId(): string {

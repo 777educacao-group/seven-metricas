@@ -4,7 +4,7 @@ import { countByFunnel, calculateRates, reversePlanning } from '../../utils/calc
 import { CalendarDays } from 'lucide-react'
 
 export default function ReversePlanning() {
-  const { leads, config, updateConfig } = useSevenStore()
+  const { leads, config } = useSevenStore()
   const counts = useMemo(() => countByFunnel(leads), [leads])
   const rates = useMemo(() => calculateRates(counts), [counts])
 

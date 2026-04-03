@@ -37,7 +37,7 @@ export function KPIGrid() {
   const valorVendido = leads.reduce((acc, l) => acc + (l.valorVendido || 0), 0)
   
   // Follow Up Potential Calculation
-  const followUpLeads = leads.filter(l => l.etape === 'fechamento' && l.status === 'follow_up')
+  const followUpLeads = leads.filter(l => l.etapa === 'fechamento' && l.status === 'follow_up')
   const potencialFU = followUpLeads.length * config.precoLiquido
   
   const ticketMedio = leads.filter(l => l.comprou).length > 0 
